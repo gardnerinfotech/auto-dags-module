@@ -2,7 +2,7 @@
 namespace Vanderbilt\AutoDAGsExternalModule;
 
 class AutoDAGsExternalModule extends \ExternalModules\AbstractExternalModule{
-	const LABEL_VALUE_SEPARATOR = ' - ';
+//	const LABEL_VALUE_SEPARATOR = ' - ';
 
 	// We cache group info for the set-all-dags.php script, both for performance and because
 	// REDCap::getGroupNames() doesn't pick up on added or renamed groups until the next request.
@@ -15,6 +15,8 @@ class AutoDAGsExternalModule extends \ExternalModules\AbstractExternalModule{
 	function setDAGFromField($project_id, $record, $group_id){
 		$currentGroupId = !is_null($group_id) ? intval($group_id) : $group_id;
 		$dagFieldName = $this->getProjectSetting('dag-field');
+		$label_value_separator = $this->getSystemSetting('label-value-separator');
+
 		if(empty($dagFieldName)){
 			return;
 		}
@@ -30,7 +32,7 @@ class AutoDAGsExternalModule extends \ExternalModules\AbstractExternalModule{
 		else{
 			$fieldLabel = $this->getChoiceLabel($dagFieldName, $fieldValue);
 
-			$groupName = $fieldLabel . self::LABEL_VALUE_SEPARATOR . $fieldValue;
+			$groupName = $fieldLabel . $label_value_separator . $fieldValue;
 
 			list($groupId, $existingGroupName) = $this->getDAGInfoForFieldValue($fieldValue);
 			if($groupId == null){
@@ -41,7 +43,8 @@ class AutoDAGsExternalModule extends \ExternalModules\AbstractExternalModule{
 			}
 		}
 
-		if ($currentGroupId !== $groupId) {
+		$ignorenull = $this->getProjectSetting('ignore-null-value');
+		if ($currentGroupId !== $groupId && (!$ignorenull || $groupId !== null)) {
 			$this->setDAG($record, $groupId);
 		}
 	}
@@ -52,8 +55,8 @@ class AutoDAGsExternalModule extends \ExternalModules\AbstractExternalModule{
 		}
 
 		foreach($this->groupsByID as $groupId=>$groupName){
-			$lastSeparatorIndex = strrpos($groupName, self::LABEL_VALUE_SEPARATOR);
-			$associatedFieldValue = substr($groupName, $lastSeparatorIndex + strlen(self::LABEL_VALUE_SEPARATOR));
+			$lastSeparatorIndex = strrpos($groupName, $label_value_separator);
+			$associatedFieldValue = substr($groupName, $lastSeparatorIndex + strlen($label_value_separator));
 
 			if($associatedFieldValue == $value){
 				return [$groupId, $groupName];

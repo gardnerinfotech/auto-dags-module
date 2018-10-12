@@ -17,11 +17,24 @@
 
 	"description": "Automatically creates, renames, and assigns records to Data Access Groups (DAGs) based on a specified Text or Notes field, in which the value of the field becomes the name of the DAG. If the DAG already exists, then the record will be assigned to the existing DAG. An extra page is also provided for assigning the DAG for all records at once.",
 
+	"system-settings": [
+		{
+			"key": "label-value-separator",
+			"name": "Label Value Separator",
+			"default": " - "
+		}
+	],
+
 	"project-settings": [
 		{
 			"key": "dag-field",
 			"name": "Choose a field (Text/Notes fields only) whose values will be used to generate Data Access Groups",
 			"type": "field-list"
+		},
+		{
+			"key": "ignore-null-value",
+			"name": "When this box is checked, a null or empty value will not change the assigned DAG. If unchecked, a null or empty value will remove the DAG assignment from the record.",
+			"type": "checkbox"
 		}
 	],
 
