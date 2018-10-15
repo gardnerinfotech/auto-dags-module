@@ -15,7 +15,7 @@ class AutoDAGsExternalModule extends \ExternalModules\AbstractExternalModule{
 	function setDAGFromField($project_id, $record, $group_id){
 		$currentGroupId = !is_null($group_id) ? intval($group_id) : $group_id;
 		$dagFieldName = $this->getProjectSetting('dag-field');
-		$label_value_separator = $this->getSystemSetting('label-value-separator');
+		$label_value_separator = ($this->getSystemSetting('label-value-separator')?:' - ');
 
 		if(empty($dagFieldName)){
 			return;
